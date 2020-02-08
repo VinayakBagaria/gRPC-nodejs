@@ -5,9 +5,18 @@ const todoproto = grpc.load('todo.proto');
 
 const server = new grpc.Server();
 
+let todos = [];
+
 server.addService(todoproto.TodoService.service, {
   list: (_, callback) => {
-    callback(null, []);
+    callback(null, todos);
+  },
+  insert: (call, callback) => {
+    let todo = call.request;
+    todo.id = uuid();
+    todos.push(todo);
+
+    callback(null, todo);
   }
 });
 
